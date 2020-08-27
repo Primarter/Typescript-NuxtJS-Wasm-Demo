@@ -39,6 +39,6 @@ function treat_function()
     print "]),";
 }
 
-BEGIN { print "export default {\n\tmethods: {\n\t\textractModule() {\n\t\t\treturn {" }
+BEGIN { print "import { Component, Vue } from 'nuxt-property-decorator'\nimport Module from '@/static/glue'\n@Component\nclass ExtractWasm extends Vue {\n\tpublic extractModule() {\n\t\treturn {" }
 /\w+\s((\s|\*)*)\w+\(((\w+\s([\s\*]*),*)*)|void\)\s*{/ { treat_function(); }
-END { print "\t\t\t}\n\t\t}\n\t},\n}" }
+END { print "\t\t}\n\t}\n}\nexport default ExtractWasm" }
