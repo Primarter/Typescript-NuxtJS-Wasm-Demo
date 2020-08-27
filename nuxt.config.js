@@ -23,14 +23,38 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
+    script: [
+      { src: 'formatting.js' },
+      { src: 'glue.js' }
+    ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          '//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css'
+      }
     ]
   },
+  loading: { color: '#fff' },
   /*
   ** Global CSS
   */
   css: [
+    '~/assets/css/main.less',
+    '~/assets/css/lists.less',
+    '~/assets/css/dropdown-menu.less',
+    '~/assets/css/devices.less'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -56,7 +80,8 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    'nuxt-fontawesome'
   ],
   /*
   ** Axios module configuration
@@ -68,7 +93,7 @@ export default {
   ** https://github.com/nuxt-community/vuetify-module
   */
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ['~/assets/variables.less'],
     theme: {
       dark: true,
       themes: {

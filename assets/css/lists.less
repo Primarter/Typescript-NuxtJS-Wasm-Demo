@@ -1,0 +1,27 @@
+@import './devices.less';
+
+.vertical-list {
+  width: inherit;
+  display: block;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+}
+@media screen and (max-width: 1000px) {
+  .vertical-list { width: 290px };
+}
+@media screen and (max-width: 800px) {
+  .vertical-list { width: 260px };
+}
+
+.vertical-list::-webkit-scrollbar {
+  width: 5px;
+  background: @light-background;
+}
+
+.vertical-list::-webkit-scrollbar-thumb {
+  background: @neon-blue;
+}
+
+.vertical-list::-webkit-scrollbar-thumb:hover {
+  background: @focus-neon-blue;
+}

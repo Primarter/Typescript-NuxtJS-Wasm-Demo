@@ -1,97 +1,116 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
+  <div class="full-page">
+    <div class="library-wrapper">
+      <div class="library-banner">
+        <h3>Bibliothèque</h3>
+        <Search />
+        <Filters />
       </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+      <div class="vertical-list">
+        <h1 v-if="results.length == 0" class="hint">No results</h1>
+        <div v-for="lesson in results">
+          <Post
+            v-if="checkFilter(lesson)"
+            :title="lesson.title"
+            :lessonStyle="lesson.style"
+            :level="lesson.level"
+            :postid="lesson.id"
+          />
+        </div>
+      </div>
+      <Footer class="footer-positioning" />
+    </div>
+    <BaseHighlight v-if="activePost.title" :title="tradTitle(page)" :showLike="page == 'Details'">
+      <Details v-if="page == 'Details'" />
+      <Graph v-else-if="page == 'Graphics'" />
+      <div v-else class="dummy-page">
+        <h1>Development in progress</h1>
+        <iframe
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          class="video-player"
+        />
+        </div>
+    </BaseHighlight>
+    <div v-else class="awaiting-selection">
+      <div class="centered-items">
+        <img src="https://drumstik.com/wp-content/themes/Drumstik_Theme/img/logo-text.png" alt="Drumstik" width="500px"/>
+        <h1><i class="fa fa-arrow-left" /> Sélectionnez un cours sur le panneau de gauche</h1>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
-export default {
+<script lang="ts">
+import Footer from '~/components/Footer.vue'
+import Filters from '~/components/Filters.vue'
+import Search from '~/components/Search.vue'
+import Post from '~/components/Post.vue'
+import BaseHighlight from '~/components/BaseHighlight.vue'
+import Details from '~/components/Details.vue'
+import Graph from '~/components/Graph.vue'
+import ExtractWasm from '~/mixins/extractWasm'
+import { PostClass } from '~/shims/types'
+import { Component, Vue, mixins, namespace } from 'nuxt-property-decorator'
+const storeData = namespace('storeData')
+@Component({
   components: {
-    Logo,
-    VuetifyLogo
+    Footer,
+    Filters,
+    Search,
+    Post,
+    BaseHighlight,
+    Details,
+    Graph
+  }
+})
+export default class Index extends mixins(ExtractWasm) {
+  Wasm: any;
+  @storeData.Getter
+  public lessons!: PostClass[]
+  @storeData.Getter
+  public results!: PostClass[]
+  @storeData.Getter
+  public activePost!: PostClass
+  @storeData.Getter
+  public page!: string
+  @storeData.Getter
+  public filter!: string
+  initLikes() {
+    this.$store.commit('initLikes');
+  }
+  getPostById(searchedId: number) {
+    for (const post in this.lessons)
+      if (this.lessons[post].id == searchedId)
+        return this.lessons[post]
+    return null
+  }
+  checkFilter(lesson: PostClass) {
+    if (this.page == 'Graphics' && (!lesson.performances && !lesson.stopwatches))
+      return false;
+    if (this.filter == 'all')
+      return true;
+    if (this.filter == 'favorites' && lesson.liked == true)
+      return true;
+    if (this.filter == 'files')
+      return true;
+    return false;
+  }
+  tradTitle(title: string) {
+    switch (title) {
+      case 'Details':
+        return 'Détails';
+      case 'Graphics':
+        return 'Statistiques';
+      default:
+        return 'En développement';
+    }
+  }
+  mounted() {
+    this.Wasm = this.extractModule();
+    this.initLikes();
   }
 }
 </script>

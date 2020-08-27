@@ -1,0 +1,42 @@
+@import "./devices.less";
+
+.dropdown-btn {
+  background-color: @dark-background;
+  color: @neon-blue;
+  padding: 1.25em 0 1.25em 0;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-btn:hover, .dropdown-btn:focus {
+  background-color: @focus-background;
+  outline: none;
+}
+
+.dropdown-wrapper {
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+.dropdown-content a {
+  font-size: 14px;
+  color: black;
+  padding: 7.5%;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd}
+
+.show {display: block; position: absolute; z-index: 2;}
