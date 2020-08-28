@@ -16,7 +16,7 @@
       <h1>{{ activePost.title }}</h1>
       <b>{{ activePost.style.toUpperCase() }}</b>
       <p>
-        <fa :icon="['far', 'fa-clock']"></fa><!--  <i class="fa fa-clock-o"></i> --> {{ formatTime(activePost.duration) + formatSkills(activePost.skills) }}
+         <i class="fa fa-clock-o"></i> {{ formatTime(activePost.duration) + formatSkills(activePost.skills) }}
       </p>
     </div>
     <div>
@@ -27,11 +27,13 @@
 </template>
 
 <script lang="ts">
+import storeData from '~/store/storeData'
+import { getModule } from 'vuex-module-decorators'
 import { Component, Vue, Prop, namespace, Getter, mixins } from 'nuxt-property-decorator'
 import { PostClass } from '~/shims/types'
 import Formatting from '~/mixins/formatting'
 import Stars from '~/components/Stars.vue'
-const storeData = namespace('storeData')
+const storeDataNamespace = namespace('storeData')
 
 function hasKey<O>(obj: O, key: keyof any): key is keyof O {
     return key in obj
@@ -43,26 +45,27 @@ function hasKey<O>(obj: O, key: keyof any): key is keyof O {
   }
 })
 export default class Comp extends mixins(Formatting) {
-  @storeData.Getter
+  storeDataModule = getModule(storeData, this.$store);
+  @storeDataNamespace.Getter
   public activePost!: PostClass;
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public lessons!: PostClass[];
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public results!: PostClass[];
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public heartClass!: string;
 
   public formatTime(mins: number): string {
-    return formatTimeStr(mins);
+    return this.formatTimeStr(mins);
   }
   public formatSkills(skills: string): string {
-    return formatSkillStr(skills);
+    return this.formatSkillStr(skills);
   }
   public likeItem() {
     if (this.activePost.liked) {
-      this.$store.commit('removeLike');
+      this.storeDataModule.removeLike();
     } else {
-      this.$store.commit('addLike');
+      this.storeDataModule.addLike();
     }
   }
 }

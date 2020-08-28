@@ -14,10 +14,12 @@
 </template>
 
 <script lang="ts">
+import storeData from '~/store/storeData'
+import { getModule } from 'vuex-module-decorators'
 import formatting from '~/mixins/formatting';
 import { Component, Vue, Prop, namespace, Getter, mixins } from 'nuxt-property-decorator'
 import { PostClass } from '~/shims/types'
-const storeData = namespace('storeData')
+const storeDataNamespace = namespace('storeData')
 
 function hasKey<O>(obj: O, key: keyof any): key is keyof O {
     return key in obj
@@ -25,16 +27,17 @@ function hasKey<O>(obj: O, key: keyof any): key is keyof O {
 
 @Component
 export default class Post extends mixins(formatting) {
+  storeDataModule = getModule(storeData, this.$store);
   @Prop() title!: string
   @Prop() lessonStyle!: string
   @Prop() level!: number
   @Prop() postid!: number
 
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public lessons!: PostClass[]
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public results!: PostClass[]
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public search!: string
 
   public checkName (name: string, str: string) {
@@ -55,10 +58,10 @@ export default class Post extends mixins(formatting) {
         return x[this.search].toString().toLowerCase().includes(str) || this.checkName(xSub, str)
       }
     })
-    this.$store.commit('updateResults', filteredArr)
+    this.storeDataModule.updateResults(filteredArr)
   }
   public updateSearch(newSearch: string) {
-    this.$store.commit('updateSearch', newSearch);
+    this.storeDataModule.updateSearch(newSearch);
   }
   public searchTrad() {
     switch (this.search) {

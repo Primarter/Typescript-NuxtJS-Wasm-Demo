@@ -11,24 +11,28 @@
 </template>
 
 <script lang="ts">
+import storeData from '~/store/storeData'
+import { getModule } from 'vuex-module-decorators'
 import { Component, Vue, Prop, namespace } from 'nuxt-property-decorator'
 import { PostClass } from '~/shims/types'
-const storeData = namespace('storeData')
+const storeDataNamespace = namespace('storeData')
 @Component
 export default class BaseHighlight extends Vue {
+  storeDataModule = getModule(storeData, this.$store);
+
   @Prop({type: String, required: true}) title!: string
   @Prop({type: Boolean, default: false}) showLike!: boolean
 
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public activePost!: PostClass
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public heartClass!: string
 
   public likeItem() {
       if (this.activePost.liked) {
-        this.$store.commit('removeLike');
+        this.storeDataModule.removeLike();
       } else {
-        this.$store.commit('addLike');
+        this.storeDataModule.addLike();
       }
     }
 }

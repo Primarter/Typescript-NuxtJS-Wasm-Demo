@@ -21,12 +21,14 @@
 </template>
 
 <script lang="ts">
+import storeData from '~/store/storeData'
+import { getModule } from 'vuex-module-decorators'
 import BtnFocus from '~/mixins/btnFocus'
 import LoadData from '~/mixins/loadData'
 import Formatting from '~/mixins/formatting'
 import { Component, Vue, Prop, namespace, Getter, mixins } from 'nuxt-property-decorator'
 import { PostClass, PerformanceInterface, StopwatchInterface } from '~/shims/types'
-const storeData = namespace('storeData')
+const storeDataNamespace = namespace('storeData')
 
 function hasKey<O>(obj: O, key: keyof any): key is keyof O {
     return key in obj
@@ -34,17 +36,18 @@ function hasKey<O>(obj: O, key: keyof any): key is keyof O {
 
 @Component
 export default class Graph extends mixins(BtnFocus, LoadData, Formatting) {
+  storeDataModule = getModule(storeData, this.$store);
   public focusBtnClass: string[] = [' data-type-btn-focus', '']
   public grade: number = 0
   public percent: number = 0
 
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public activePost!: PostClass
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public dataType!: string
 
   public toggleDataType() {
-    this.$store.commit('toggleDataType');
+    this.storeDataModule.toggleDataType();
   }
   public calculateMedals() {
     if (hasKey(this.activePost, this.dataType)) {

@@ -7,9 +7,9 @@ const storeData = namespace('storeData')
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach(baseCtor => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+    Object.getOwnPropertyNames(baseCtor).forEach(name => {
       if (name !== 'constructor') {
-        derivedCtor.prototype[name] = baseCtor.prototype[name];
+        derivedCtor.prototype[name] = baseCtor.__proto__[name];
       }
     });
   });

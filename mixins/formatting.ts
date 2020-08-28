@@ -22,7 +22,7 @@ class Formatting extends Vue {
       let format = ' | '
       skills.split(';').forEach((i, idx, array) => {
         if (idx == 0)
-          format += capitalizeFLetter(i) + ', '
+          format += this.capitalizeFLetter(i) + ', '
         else if (idx != array.length - 1)
           format += i.toLowerCase() + ', '
         else

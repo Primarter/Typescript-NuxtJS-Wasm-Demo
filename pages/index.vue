@@ -52,9 +52,12 @@ import BaseHighlight from '~/components/BaseHighlight.vue'
 import Details from '~/components/Details.vue'
 import Graph from '~/components/Graph.vue'
 import ExtractWasm from '~/mixins/extractWasm'
+import storeData from '~/store/storeData'
 import { PostClass } from '~/shims/types'
 import { Component, Vue, mixins, namespace } from 'nuxt-property-decorator'
-const storeData = namespace('storeData')
+import { getModule } from 'vuex-module-decorators'
+
+const storeDataNamespace = namespace('storeData')
 @Component({
   components: {
     Footer,
@@ -67,27 +70,28 @@ const storeData = namespace('storeData')
   }
 })
 export default class Index extends mixins(ExtractWasm) {
+  storeModule = getModule(storeData, this.$store)
   Wasm: any;
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public lessons!: PostClass[]
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public results!: PostClass[]
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public activePost!: PostClass
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public page!: string
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public filter!: string
-  initLikes() {
-    this.$store.commit('initLikes');
-  }
-  getPostById(searchedId: number) {
+  @storeDataNamespace.Mutation
+  public initLikes!: () => void;
+
+  public getPostById(searchedId: number) {
     for (const post in this.lessons)
       if (this.lessons[post].id == searchedId)
         return this.lessons[post]
     return null
   }
-  checkFilter(lesson: PostClass) {
+  public checkFilter(lesson: PostClass) {
     if (this.page == 'Graphics' && (!lesson.performances && !lesson.stopwatches))
       return false;
     if (this.filter == 'all')
@@ -98,7 +102,7 @@ export default class Index extends mixins(ExtractWasm) {
       return true;
     return false;
   }
-  tradTitle(title: string) {
+  public tradTitle(title: string) {
     switch (title) {
       case 'Details':
         return 'Détails';
@@ -108,9 +112,9 @@ export default class Index extends mixins(ExtractWasm) {
         return 'En développement';
     }
   }
-  mounted() {
+  public mounted() {
     this.Wasm = this.extractModule();
-    this.initLikes();
+    this.storeModule.initLikes();
   }
 }
 </script>

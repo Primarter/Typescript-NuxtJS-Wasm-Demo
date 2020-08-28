@@ -42,7 +42,7 @@ export default class storeData extends VuexModule {
   get heartClass(): string {
     return this._heartClass;
   }
-  get Page(): string {
+  get page(): string {
     return this._page;
   }
   get dataType(): string {
@@ -56,23 +56,23 @@ export default class storeData extends VuexModule {
     });
   }
   @Mutation
-  public updateFilter(newFilter: string): void {
+  public updateFilter(newFilter: string) {
     this._filter = newFilter;
   }
   @Mutation
-  public updateResults(newResults: PostClass[]): void {
+  public updateResults(newResults: PostClass[]) {
     this._results = newResults;
   }
   @Mutation
-  public updateSearch(newSearch: string): void {
+  public updateSearch(newSearch: string) {
     this._search = newSearch;
   }
   @Mutation
-  public updatePage(newPage: string): void {
+  public updatePage(newPage: string) {
     this._page = newPage;
   }
   @Mutation
-  public updateActive(postId: number): void {
+  public updateActive(postId: number) {
     if (postId == -1) {
       PostClass.resetPost(this._activePost);
       return;

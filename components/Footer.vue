@@ -16,21 +16,24 @@
 </template>
 
 <script lang="ts">
+import storeData from '~/store/storeData'
+import { getModule } from 'vuex-module-decorators'
 import BtnFocus from '~/mixins/btnFocus'
 import { Component, Vue, Prop, namespace, Getter, mixins } from 'nuxt-property-decorator'
 import { PostClass } from '~/shims/types';
-const storeData = namespace('storeData')
+const storeDataNamespace = namespace('storeData')
 @Component
 export default class Footer extends mixins(BtnFocus) {
+  storeDataModule = getModule(storeData, this.$store);
   public focusBtnClass: string[] = [' btn-focus', '', '', ''];
 
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public activePost!: PostClass
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public page!: string
 
   public resetActive() {
-    this.$store.commit('updateActive', -1);
+    this.storeDataModule.updateActive(-1);
   }
 }
 </script>

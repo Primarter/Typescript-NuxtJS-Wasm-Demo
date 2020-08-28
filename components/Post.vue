@@ -12,29 +12,38 @@
 </template>
 
 <script lang="ts">
+import storeData from '~/store/storeData'
+import { getModule } from 'vuex-module-decorators'
 import Stars from '~/components/Stars.vue'
 import { Component, Vue, Prop, namespace, Getter } from 'nuxt-property-decorator'
 import { PostClass } from '~/shims/types'
-const storeData = namespace('storeData')
+const storeDataNamespace = namespace('storeData')
 @Component({
   components: {
     Stars
   }
 })
 export default class Post extends Vue {
+  storeDataModule = getModule(storeData, this.$store)
   @Prop() title!: string
   @Prop() lessonStyle!: string
   @Prop() level!: number
   @Prop() postid!: number
 
-  @storeData.Getter
+  @storeDataNamespace.Getter
   public activePost!: PostClass
 
   public capitalizeFLetter(str: string): string {
-    return str[0].toUpperCase() + str.slice(1).toLowerCase()
+    if (str)
+      return str[0].toUpperCase() + str.slice(1).toLowerCase();
+    else
+      return "None"
   }
   public changeActive(postid: number) {
-    this.$store.commit('updateActive', postid);
+    this.storeDataModule.updateActive(postid);
+  }
+  mounted() {
+    console.log(this.title, this.lessonStyle, this.level, this.postid)
   }
 }
 </script>
