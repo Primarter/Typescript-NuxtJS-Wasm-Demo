@@ -1,5 +1,5 @@
 <template>
-  <section v-if="activePost == null || activePost.id != postid" class="post" @click="changeActive(postid)">
+  <section v-if="activePost.title == '' || activePost.id != postid" class="post" @click="changeActive(postid)">
     <h4>{{ title }}</h4>
     <p>{{ capitalizeFLetter(lessonStyle) }}</p>
     <Stars :level="level" :scale="22" style="float: right" />
@@ -37,7 +37,7 @@ export default class Post extends Vue {
     if (str)
       return str[0].toUpperCase() + str.slice(1).toLowerCase();
     else
-      return "None"
+      return "DAMN";
   }
   public changeActive(postid: number) {
     this.storeDataModule.updateActive(postid);

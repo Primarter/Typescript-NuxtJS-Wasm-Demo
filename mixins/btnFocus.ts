@@ -19,7 +19,8 @@ export default class BtnFocus extends Vue {
             }
         }
         if (newFocus != 'Same' && storeCommit && hasKey(this.storeDataModule, storeCommit)) {
-            this.storeDataModule[storeCommit](newFocus);
+            let myTest: any = this.storeDataModule;
+            myTest[storeCommit](newFocus);
         }
     }
 }

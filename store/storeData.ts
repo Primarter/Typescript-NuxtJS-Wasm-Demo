@@ -74,7 +74,7 @@ export default class storeData extends VuexModule {
   @Mutation
   public updateActive(postId: number) {
     if (postId == -1) {
-      PostClass.resetPost(this._activePost);
+      this._activePost = new PostClass
       return;
     }
     this._activePost = this._lessons[getPostIndById(this._lessons, postId)];
